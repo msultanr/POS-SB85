@@ -1,0 +1,156 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+}
+
+enum PaymentMethod {
+  CASH
+  QRIS
+}
+
+enum PaymentStatus {
+  UNPAID
+  REVIEW
+  PAID
+  REJECTED
+  EXPIRED
+}
+
+enum OrderSource {
+  CASHIER
+  SELF_SERVICE
+}
+
+model Setting {
+  id        String   @id @db.VarChar(200)
+  image     Bytes    @db.LongBlob
+  mimeType  String   @db.VarChar(32)
+  updatedAt DateTime @updatedAt
+
+  @@map("settings")
+}
+
+model PaymentProof {
+  id        String   @id @default(cuid())
+  orderId   String   @unique
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  image     Bytes    @db.LongBlob
+  mimeType  String   @db.VarChar(32)
+  version   String   @db.Char(36)
+  updatedAt DateTime @updatedAt
+}
+
+model PublicRateLimit {
+  key      String   @id @db.VarChar(200)
+  attempts Int
+  resetAt  DateTime
+}
+
+model Admin {
+  notifications OrderNotification[]
+  id           String   @id @default(cuid())
+  username     String   @unique @db.VarChar(80)
+  passwordHash String   @db.VarChar(256)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Category {
+  id        String    @id @default(cuid())
+  name      String    @unique @db.VarChar(80)
+  products  Product[]
+  createdAt DateTime  @default(now())
+}
+
+model Product {
+  id          String      @id @default(cuid())
+  name        String      @db.VarChar(120)
+  imageUrl    String?     @db.VarChar(2048)
+  price       Int
+  isAvailable Boolean     @default(true)
+  deletedAt   DateTime?
+  categoryId  String
+  category    Category    @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  orderItems  OrderItem[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([categoryId, deletedAt])
+}
+
+model Order {
+  notifications OrderNotification[]
+  id             String      @id @default(cuid())
+  code           String      @unique @db.VarChar(13)
+  number         Int         @unique @default(autoincrement())
+  idempotencyKey String      @unique @db.Char(36)
+  requestHash    String      @db.VarChar(64)
+  status         OrderStatus @default(PENDING)
+  total          Int
+  paid           Int
+  change         Int
+  paymentMethod  PaymentMethod @default(CASH)
+  paymentStatus  PaymentStatus @default(PAID)
+  source         OrderSource   @default(CASHIER)
+  customerName   String?       @db.VarChar(80)
+  tableNumber    String?       @db.VarChar(20) // Legacy only.
+  whatsapp       String?       @db.VarChar(20)
+  fulfillment    Fulfillment   @default(PICKUP)
+  deliveryAddress String?      @db.VarChar(500)
+  scheduledAt    DateTime?
+  courierUrl     String?       @db.VarChar(2048)
+  accessTokenHash String?      @unique @db.VarChar(64)
+  paymentNote    String?       @db.VarChar(300)
+  verifiedAt     DateTime?
+  verifiedBy     String?       @db.VarChar(80)
+  proof          PaymentProof?
+  items          OrderItem[]
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  @@index([status, createdAt])
+  @@index([paymentStatus, createdAt])
+}
+
+enum Fulfillment {
+  PICKUP
+  DELIVERY
+}
+
+model OrderNotification {
+  id        String   @id @default(cuid())
+  adminId   String
+  orderId   String
+  createdAt DateTime @default(now())
+  readAt    DateTime?
+  admin     Admin    @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@unique([adminId, orderId])
+  @@index([adminId, readAt, createdAt])
+}
+
+model OrderItem {
+  id          String  @id @default(cuid())
+  orderId     String
+  order       Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+  productName String  @db.VarChar(120)
+  unitPrice   Int
+  quantity    Int
+  subtotal    Int
+
+  @@index([orderId])
+  @@index([productId])
+}

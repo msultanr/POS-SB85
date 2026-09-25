@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #252b29;
+  --primary: #21634e;
+  --primary-foreground: #ffffff;
+  --secondary: #eaf1eb;
+  --secondary-foreground: #21634e;
+  --muted: #f3f4f1;
+  --muted-foreground: #737a75;
+  --border: #e7e9e3;
+  --input: #dfe3db;
+  --ring: #21634e;
+  --destructive: #bd3e37;
+  --radius: 0.75rem;
+}
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+  --font-sans: "Avenir Next", "Segoe UI", Arial, sans-serif;
+}
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-[#f7f8f5] text-foreground font-sans antialiased;
+  }
+  button,
+  a,
+  input,
+  select {
+    -webkit-tap-highlight-color: transparent;
+  }
+  button:not(:disabled),
+  select {
+    cursor: pointer;
+  }
+  button,
+  a {
+    touch-action: manipulation;
+  }
+  ::selection {
+    background: #d5e8da;
+  }
+}
