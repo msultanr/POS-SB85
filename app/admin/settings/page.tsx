@@ -1,9 +1,12 @@
 import { AppShell } from "@/components/app-shell";
 import { QrisSettings } from "@/components/admin/qris-settings";
 import { LogoSettings } from "@/components/admin/logo-settings";
-import { getLogoVersion } from "@/lib/branding";
+import { getLogoVersion, getStoreName } from "@/lib/branding";
+import { StoreNameSettings } from "@/components/admin/store-name-settings";
 import { requireSession } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { isSelfOrderOpen } from "@/lib/order-availability";
+import { OrderSettings } from "@/components/admin/order-settings";
 export const dynamic = "force-dynamic";
 export default async function SettingsPage() {
   await requireSession();
@@ -27,6 +30,8 @@ export default async function SettingsPage() {
             berlaku tanpa deploy ulang.
           </p>
         </div>
+        <StoreNameSettings name={await getStoreName()} />
+        <OrderSettings open={await isSelfOrderOpen()} />
         <LogoSettings updatedAt={logoVersion} />
         <QrisSettings updatedAt={qris?.updatedAt.toISOString() ?? null} />
       </main>

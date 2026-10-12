@@ -18,17 +18,19 @@ export function QrisDisplay({
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={src}
-        alt="QRIS pembayaran Teras SB85"
+        alt="QRIS pembayaran toko"
         className="mx-auto max-h-[420px] w-full max-w-sm rounded-xl object-contain"
       />
-      <p className="text-sm font-semibold">Pastikan penerima: TERAS SB 85.</p>
+      <p className="text-sm font-semibold">
+        Pastikan penerima sesuai dengan QRIS resmi toko.
+      </p>
       <p className="text-xs text-muted-foreground">
         QRIS statis: masukkan nominal sesuai total di aplikasi pembayaran Anda.
         Jangan bayar lagi jika sudah berhasil.
       </p>
       <a
         href={src}
-        download="QRIS-Teras-SB85"
+        download="QRIS-Toko"
         className="inline-flex min-h-11 items-center rounded-xl border px-4 text-sm font-semibold text-primary"
       >
         Unduh QRIS

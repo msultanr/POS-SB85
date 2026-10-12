@@ -33,8 +33,9 @@ enum OrderSource {
 
 model Setting {
   id        String   @id @db.VarChar(200)
-  image     Bytes    @db.LongBlob
-  mimeType  String   @db.VarChar(32)
+  image     Bytes?   @db.LongBlob
+  mimeType  String?  @db.VarChar(32)
+  value     String?  @db.VarChar(120)
   updatedAt DateTime @updatedAt
 
   @@map("settings")

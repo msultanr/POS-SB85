@@ -2,6 +2,7 @@ import { AppShell } from "@/components/app-shell";
 import { PosTerminal } from "@/components/pos/pos-terminal";
 import { requireSession } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { sortCatalog } from "@/lib/catalog-order";
 export const dynamic = "force-dynamic";
 export default async function PosPage() {
   await requireSession();
@@ -30,8 +31,7 @@ export default async function PosPage() {
   return (
     <AppShell active="pos">
       <PosTerminal
-        products={products}
-        categories={categories}
+        {...sortCatalog(products, categories)}
         qrisAvailable={!!qris}
         qrisVersion={qris?.updatedAt.toISOString() ?? null}
       />

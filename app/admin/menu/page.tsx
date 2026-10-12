@@ -2,6 +2,7 @@ import { AppShell } from "@/components/app-shell";
 import { MenuManager } from "@/components/admin/menu-manager";
 import { requireSession } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { sortCatalog } from "@/lib/catalog-order";
 export const dynamic = "force-dynamic";
 export default async function AdminMenuPage() {
   await requireSession();
@@ -25,7 +26,7 @@ export default async function AdminMenuPage() {
   ]);
   return (
     <AppShell active="menu">
-      <MenuManager products={products} categories={categories} />
+      <MenuManager {...sortCatalog(products, categories)} />
     </AppShell>
   );
 }

@@ -16,6 +16,10 @@ import type { ActionResult, Receipt } from "@/lib/types";
 import { generateOrderCode } from "@/lib/generate-order-code";
 import { expireUnpaidOrders } from "@/lib/payment-expiry";
 import { paymentDeadline } from "@/lib/payment-deadline";
+import {
+  isSelfOrderOpen,
+  ORDER_CLOSED_MESSAGE,
+} from "@/lib/order-availability";
 
 export async function createOrder(
   input: CheckoutInput,
@@ -86,6 +90,10 @@ export async function createOrder(
                     : null,
               };
             }
+            // Check inside the serializable transaction, not only on the page.
+            // Existing idempotent retries above remain recoverable after closing.
+            if (source === "SELF_SERVICE" && !(await isSelfOrderOpen(tx)))
+              throw new UserError(ORDER_CLOSED_MESSAGE);
             if (
               paymentMethod === "QRIS" &&
               !(await tx.setting.findUnique({

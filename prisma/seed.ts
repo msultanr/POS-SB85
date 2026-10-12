@@ -12,6 +12,16 @@ const prisma = new PrismaClient({
 const photo = (id: string) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=600&q=80`;
 async function main() {
+  await prisma.setting.upsert({
+    where: { id: "selfOrderOpen" },
+    create: { id: "selfOrderOpen", value: "true" },
+    update: {},
+  });
+  await prisma.setting.upsert({
+    where: { id: "storeName" },
+    create: { id: "storeName", value: "Teras SB85" },
+    update: {},
+  });
   await seedStoreAssets(prisma, process.argv.includes("--replace-assets"));
   await prisma.admin.upsert({
     where: { username: "administrator" },

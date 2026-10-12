@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { StoreLogo } from "@/components/store-logo";
-import { getLogoVersion } from "@/lib/branding";
+import { getLogoVersion, getStoreName } from "@/lib/branding";
 export const metadata = {
-  title: "Pesan sendiri · Teras SB85",
+  title: "Pesan sendiri",
   referrer: "no-referrer" as const,
 };
 export default async function CustomerLayout({
@@ -19,7 +19,9 @@ export default async function CustomerLayout({
           className="flex items-center gap-3 text-xl font-bold"
         >
           <StoreLogo version={logoVersion} />
-          Teras SB85
+          <span className="max-w-[240px] break-words">
+            {await getStoreName()}
+          </span>
         </Link>
         <Link
           href="/tracking"

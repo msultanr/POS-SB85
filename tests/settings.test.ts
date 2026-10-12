@@ -26,6 +26,37 @@ describe("shared settings storage", () => {
       update: image,
     });
   });
+  it("saves a trimmed store name without overwriting either image", async () => {
+    const { saveStoreName } = await import("@/actions/branding");
+    const form = new FormData();
+    form.set("storeName", "  Toko Baru  ");
+    expect((await saveStoreName(form)).success).toBe(true);
+    expect(mock.upsert).toHaveBeenCalledExactlyOnceWith({
+      where: { id: "storeName" },
+      create: { id: "storeName", value: "Toko Baru" },
+      update: { value: "Toko Baru" },
+    });
+  });
+  it("rejects blank, missing, and overlong store names", async () => {
+    const { saveStoreName } = await import("@/actions/branding");
+    for (const value of [null, "   ", "a", "x".repeat(121)]) {
+      const form = new FormData();
+      if (value !== null) form.set("storeName", value);
+      expect((await saveStoreName(form)).success).toBe(false);
+    }
+    expect(mock.upsert).not.toHaveBeenCalled();
+  });
+  it("requires admin before saving a store name", async () => {
+    const { requireSession } = await import("@/lib/auth");
+    vi.mocked(requireSession).mockRejectedValueOnce(
+      new Error("Unauthenticated"),
+    );
+    const { saveStoreName } = await import("@/actions/branding");
+    await expect(saveStoreName(new FormData())).rejects.toThrow(
+      "Unauthenticated",
+    );
+    expect(mock.upsert).not.toHaveBeenCalled();
+  });
   it("updates only the QRIS setting", async () => {
     const { saveQrisImage } = await import("@/actions/payment");
     expect((await saveQrisImage(new FormData())).success).toBe(true);

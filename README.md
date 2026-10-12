@@ -2,6 +2,20 @@
 
 Aplikasi POS Next.js App Router + TypeScript, Tailwind CSS 4, komponen shadcn/ui (Radix), Zustand, MySQL, dan Prisma 7. Antarmuka berbahasa Indonesia, nominal rupiah bulat, pembayaran tunai dan QRIS, serta pemesanan mandiri pelanggan.
 
+## Buka/tutup pemesanan pelanggan
+
+Settings → Pemesanan pelanggan menyediakan tombol Buka/Tutup pemesanan.
+Status disimpan di tabel `settings` dengan `id=selfOrderOpen`, nilai `true`/`false`.
+Jika belum pernah diatur, status awal tetap dibuka. Seed ulang tidak mengganti
+pilihan admin; tidak perlu migrasi skema tambahan.
+
+Saat ditutup, `/order` hanya menampilkan pemberitahuan (katalog dan keranjang
+tidak disajikan). Checkout pesanan baru ditolak di dalam transaksi server,
+termasuk dari halaman lama. Tampilan pelanggan aktif diperbarui tiap 15 detik.
+Kasir `/pos`, tautan pembayaran `/order/[token]`, dan `/tracking` tetap tersedia
+untuk menyelesaikan pesanan lama. Retry checkout yang sudah berhasil hanya
+mengembalikan pesanan yang sama, tidak membuat pesanan baru.
+
 ## Batas pembayaran QRIS
 
 Pesanan QRIS kasir maupun self-service memiliki batas 10 menit sejak `createdAt`.
@@ -24,6 +38,17 @@ dihapus; pesanan kedaluwarsa dikeluarkan dari antrean aktif dan dihitung di repo
 Jalankan `npm run db:migrate` sebelum menjalankan versi ini.
 
 ## Struktur folder
+
+Nama toko dapat diubah di Settings (2–120 karakter), disimpan di tabel `settings`
+dengan `id=storeName` dan kolom `value`. Perubahan digunakan untuk nama pada web
+dan judul tab; tidak mengubah kode pesanan atau identitas merchant QRIS.
+Logo dan QRIS tetap tersimpan di tabel yang sama; migrasi nama toko tidak mengubah
+byte gambar lama. Seed ulang mempertahankan nama toko yang sudah disimpan admin.
+
+Katalog pada `/pos`, `/order`, dan `/admin/menu` memakai urutan kategori
+Makanan utama → Camilan → Minuman, kemudian kategori lain secara alfabetis.
+Di dalam setiap kategori, menu diurutkan berdasarkan nama. Filter dan pencarian
+mempertahankan urutan tersebut.
 
 ```text
 app/

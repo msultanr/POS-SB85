@@ -3,7 +3,8 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export async function GET() {
   const qris = await db().setting.findUnique({ where: { id: "qris" } });
-  if (!qris) return new Response("QRIS belum tersedia", { status: 404 });
+  if (!qris?.image || !qris.mimeType)
+    return new Response("QRIS belum tersedia", { status: 404 });
   return new Response(new Uint8Array(qris.image), {
     headers: {
       "Content-Type": qris.mimeType,

@@ -22,12 +22,12 @@ export function StoreLogo({
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={src}
-          alt="Logo Teras SB85"
+          alt="Logo toko"
           className="size-full object-contain"
           onError={() => setFailedUrl(src)}
         />
       ) : (
-        <Coffee aria-label="Teras SB85" className="size-6 text-primary" />
+        <Coffee aria-label="Logo toko" className="size-6 text-primary" />
       )}
     </span>
   );

@@ -10,7 +10,7 @@ import { LogoutButton } from "@/components/logout-button";
 import { requireSession } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { StoreLogo } from "@/components/store-logo";
-import { getLogoVersion } from "@/lib/branding";
+import { getLogoVersion, getStoreName } from "@/lib/branding";
 import { OrderNotifications } from "@/components/admin/order-notifications";
 export async function AppShell({
   active,
@@ -21,6 +21,7 @@ export async function AppShell({
 }) {
   const user = await requireSession();
   const logoVersion = await getLogoVersion();
+  const storeName = await getStoreName();
   const links = [
     { id: "pos", label: "Kasir", href: "/pos", Icon: LayoutGrid },
     { id: "orders", label: "Pesanan", href: "/orders", Icon: ClipboardList },
@@ -50,8 +51,8 @@ export async function AppShell({
           <Link href="/pos" className="flex items-center gap-3">
             <StoreLogo version={logoVersion} />
             <span>
-              <span className="block text-xl font-bold tracking-tight">
-                Teras <span className="text-primary">SB85</span>
+              <span className="block max-w-[240px] break-words text-xl font-bold tracking-tight">
+                {storeName}
               </span>
               <span className="block text-[10px] font-semibold tracking-[0.22em] text-muted-foreground">
                 GOOD FOOD, GOOD MOOD
@@ -83,7 +84,9 @@ export async function AppShell({
             <OrderNotifications />
             <span className="hidden text-right text-xs sm:block">
               <span className="block font-semibold">{user.username}</span>
-              <span className="text-muted-foreground">Teras SB85</span>
+              <span className="block max-w-48 break-words text-muted-foreground">
+                {storeName}
+              </span>
             </span>
             <LogoutButton />
           </div>

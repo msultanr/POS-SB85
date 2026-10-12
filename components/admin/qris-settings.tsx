@@ -14,7 +14,7 @@ export function QrisSettings({ updatedAt }: { updatedAt: string | null }) {
         <div>
           <h2 className="text-lg font-semibold">QRIS & pemesanan pelanggan</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Unggah gambar QRIS asli milik Teras SB85. Pelanggan memesan tanpa
+            Unggah gambar QRIS asli milik toko. Pelanggan memesan tanpa
             login di{" "}
             <Link
               href="/order"

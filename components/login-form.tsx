@@ -5,14 +5,22 @@ import { StoreLogo } from "@/components/store-logo";
 import { login } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-export function LoginForm({ logoVersion }: { logoVersion: string | null }) {
+export function LoginForm({
+  logoVersion,
+  storeName,
+}: {
+  logoVersion: string | null;
+  storeName: string;
+}) {
   const [state, action, pending] = useActionState(login, { error: "" });
   return (
     <main className="flex min-h-dvh items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
         <div className="mb-8 flex flex-col items-center gap-3">
           <StoreLogo version={logoVersion} className="size-28 rounded-2xl" />
-          <h1 className="text-3xl font-bold tracking-tight">Teras SB85</h1>
+          <h1 className="max-w-full break-words text-center text-3xl font-bold tracking-tight">
+            {storeName}
+          </h1>
           <p className="text-muted-foreground">
             Siap menyambut pesanan hari ini?
           </p>
@@ -61,7 +69,7 @@ export function LoginForm({ logoVersion }: { logoVersion: string | null }) {
           </Button>
         </form>
         <p className="mt-6 text-center text-xs text-muted-foreground">
-          Ruang kerja kasir · Teras SB85
+          Ruang kerja kasir · {storeName}
         </p>
       </div>
     </main>

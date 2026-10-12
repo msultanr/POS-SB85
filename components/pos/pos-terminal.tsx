@@ -42,12 +42,14 @@ export function PosTerminal({
   selfService = false,
   qrisAvailable = false,
   qrisVersion = null,
+  storeName = "Teras SB85",
 }: {
   products: ProductView[];
   categories: CategoryView[];
   selfService?: boolean;
   qrisAvailable?: boolean;
   qrisVersion?: string | null;
+  storeName?: string;
 }) {
   const router = useRouter();
   const cashierCart = useCartStore();
@@ -156,7 +158,7 @@ export function PosTerminal({
         <div className="mb-6 flex items-start justify-between gap-3">
           <div>
             <p className="mb-1 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
-              {selfService ? "Selamat datang di Teras SB85" : "Ruang kasir"}
+              {selfService ? `Selamat datang di ${storeName}` : "Ruang kasir"}
             </p>
             <h1 className="text-3xl font-bold tracking-tight">
               Ada pesanan apa?
